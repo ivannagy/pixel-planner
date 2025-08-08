@@ -1,5 +1,7 @@
 # Pixel Planner
 
+[![CI](https://github.com/ivannagy/pixel-planner/actions/workflows/ci.yml/badge.svg)](https://github.com/ivannagy/pixel-planner/actions/workflows/ci.yml)
+
 Automate project plans written in Markdown. Generate a clean, gantt-like timeline from your phases and milestones, and keep progress indicators up to date with a single command.
 
 ## Features
@@ -37,6 +39,11 @@ python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basi
 python3 scripts/pixel_planner.py timeline --in Project-Plan.md --out Project-Plan.out.md --basis baseline
 ```
 
+- Generate as-of a specific date (for reproducible timelines):
+```bash
+python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basis current --date 2025-03-02
+```
+
 ## Sample project
 - A complete example is included: [`Sample-Project-Plan.md`](./Sample-Project-Plan.md)
 - Regenerate its timeline anytime:
@@ -45,10 +52,21 @@ python3 scripts/pixel_planner.py timeline --in Project-Plan.md --out Project-Pla
 python3 scripts/pixel_planner.py timeline --in Sample-Project-Plan.md --in-place --basis current
 ```
 
+## Short history (vibe-coding)
+- This project was built using a vibe-coding (AI-assisted pair programming) workflow.
+- The only manually created artifact at the start was the first Markdown template; everything else
+  (the Python CLI, timeline logic, clamping and percentage rules, sample plan, tests, CI, and repo docs)
+  was iteratively generated and refined in-session.
+
+My take: this approach fits this tool very well. Rapid, iterative edits plus immediate feedback make it
+easy to converge on the exact timeline semantics and formatting you want. The added tests and CI balance
+speed with correctness and maintainability. For larger systems, I’d complement this with brief design docs
+and peer reviews, but for a focused automation like Pixel Planner, vibe-coding was a strong choice.
+
 ## Template rules (what the script expects)
 - Timeline section
   - There must be a heading named exactly `## Project Timeline (Phases)`
-  - The content under it is a fenced block (```vb ... ```). The script fully rewrites this block.
+  - The content under it is a fenced block (```text ... ```). The script fully rewrites this block.
 
 - Phase sections
   - Each phase must use a heading of the form: `## Phase 01 – Phase Name` (hyphen `-` also accepted instead of the en dash `–`).
