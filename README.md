@@ -52,6 +52,17 @@ python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basi
 python3 scripts/pixel_planner.py timeline --in Sample-Project-Plan.md --in-place --basis current
 ```
 
+## Short history (vibe-coding)
+- This project was built using a vibe-coding (AI-assisted pair programming) workflow.
+- The only manually created artifact at the start was the first Markdown template; everything else
+  (the Python CLI, timeline logic, clamping and percentage rules, sample plan, tests, CI, and repo docs)
+  was iteratively generated and refined in-session.
+
+My take: this approach fits this tool very well. Rapid, iterative edits plus immediate feedback make it
+easy to converge on the exact timeline semantics and formatting you want. The added tests and CI balance
+speed with correctness and maintainability. For larger systems, I’d complement this with brief design docs
+and peer reviews, but for a focused automation like Pixel Planner, vibe-coding was a strong choice.
+
 ## Template rules (what the script expects)
 - Timeline section
   - There must be a heading named exactly `## Project Timeline (Phases)`
