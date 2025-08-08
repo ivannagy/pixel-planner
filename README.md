@@ -37,6 +37,11 @@ python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basi
 python3 scripts/pixel_planner.py timeline --in Project-Plan.md --out Project-Plan.out.md --basis baseline
 ```
 
+- Generate as-of a specific date (for reproducible timelines):
+```bash
+python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basis current --date 2025-03-02
+```
+
 ## Sample project
 - A complete example is included: [`Sample-Project-Plan.md`](./Sample-Project-Plan.md)
 - Regenerate its timeline anytime:
@@ -48,7 +53,7 @@ python3 scripts/pixel_planner.py timeline --in Sample-Project-Plan.md --in-place
 ## Template rules (what the script expects)
 - Timeline section
   - There must be a heading named exactly `## Project Timeline (Phases)`
-  - The content under it is a fenced block (```vb ... ```). The script fully rewrites this block.
+  - The content under it is a fenced block (```text ... ```). The script fully rewrites this block.
 
 - Phase sections
   - Each phase must use a heading of the form: `## Phase 01 – Phase Name` (hyphen `-` also accepted instead of the en dash `–`).

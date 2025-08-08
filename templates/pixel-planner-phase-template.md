@@ -2,7 +2,7 @@
 
 ## Project Timeline (Phases)
 
-```vb
+```text
                                                               ┌─→ YYYY-MM-DD (X% / Y%)
 - Phase 01 – Phase Name ▲ W 0X-0X YYYY-MM-DD to YYYY-MM-DD → [|■ ■ ■ ■ ■ ■] X% / Y%
 - Phase 02 – Phase Name ▲ W 0X-0X YYYY-MM-DD to YYYY-MM-DD →  |           [■ ■ ■ ■ ■ ■] X% / Y%

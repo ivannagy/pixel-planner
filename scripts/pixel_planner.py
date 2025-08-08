@@ -381,7 +381,7 @@ def replace_timeline_section(md: str, vb_block_content: str) -> str:
         new_block = [
             "## Project Timeline (Phases)",
             "",
-            "```vb",
+            "```text",
             *vb_block_content.splitlines(),
             "```",
         ]
@@ -409,7 +409,7 @@ def replace_timeline_section(md: str, vb_block_content: str) -> str:
     new_block = [
         lines[heading_idx],
         "",
-        "```vb",
+        "```text",
         *vb_block_content.splitlines(),
         "```",
     ]
@@ -436,10 +436,10 @@ def cmd_init(template: Path, out_file: Path, project_name: Optional[str]) -> Non
     print(f"Initialized plan at: {out_file}")
 
 
-def cmd_timeline(in_file: Path, in_place: bool, out_file: Optional[Path], plan_basis: str) -> None:
+def cmd_timeline(in_file: Path, in_place: bool, out_file: Optional[Path], plan_basis: str, as_of: Optional[date]) -> None:
     md = read_text(in_file)
     phases = parse_markdown_for_phases(md)
-    today = date.today()
+    today = as_of or date.today()
     vb = generate_timeline_block(phases, today, plan_basis=plan_basis)
     new_md = replace_timeline_section(md, vb)
     if in_place:
@@ -471,6 +471,13 @@ def build_parser() -> argparse.ArgumentParser:
         default="current",
         help="Use current plan dates or baseline dates for the timeline layout",
     )
+    p_tl.add_argument(
+        "--date",
+        dest="as_of",
+        type=str,
+        required=False,
+        help="Override 'today' (YYYY-MM-DD) for timeline generation",
+    )
 
     return p
 
@@ -484,7 +491,13 @@ def main(argv: Optional[List[str]] = None) -> None:
     elif command == "timeline":
         if not args.in_place and not args.out_file:
             raise SystemExit("When not using --in-place, you must provide --out")
-        cmd_timeline(args.in_file, args.in_place, args.out_file, args.basis)
+        as_of_date: Optional[date] = None
+        if args.as_of:
+            try:
+                as_of_date = datetime.strptime(args.as_of, DATE_FMT).date()
+            except ValueError:
+                raise SystemExit("--date must be in YYYY-MM-DD format")
+        cmd_timeline(args.in_file, args.in_place, args.out_file, args.basis, as_of_date)
     else:
         parser.print_help()
 
