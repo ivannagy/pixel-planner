@@ -37,6 +37,14 @@ python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basi
 python3 scripts/pixel_planner.py timeline --in Project-Plan.md --out Project-Plan.out.md --basis baseline
 ```
 
+## Sample project
+- A complete example is included: [`Sample-Project-Plan.md`](./Sample-Project-Plan.md)
+- Regenerate its timeline anytime:
+
+```bash
+python3 scripts/pixel_planner.py timeline --in Sample-Project-Plan.md --in-place --basis current
+```
+
 ## Template rules (what the script expects)
 - Timeline section
   - There must be a heading named exactly `## Project Timeline (Phases)`
