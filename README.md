@@ -1,5 +1,7 @@
 # Pixel Planner
 
+[![CI](https://github.com/ivannagy/pixel-planner/actions/workflows/ci.yml/badge.svg)](https://github.com/ivannagy/pixel-planner/actions/workflows/ci.yml)
+
 Automate project plans written in Markdown. Generate a clean, gantt-like timeline from your phases and milestones, and keep progress indicators up to date with a single command.
 
 ## Features
