@@ -5,8 +5,7 @@ import re
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 from pathlib import Path
-from typing import List, Optional, Tuple, Sequence
-
+from typing import List, Optional, Sequence
 
 # -----------------------------
 # Data models
@@ -110,7 +109,6 @@ def parse_markdown_for_phases(md: str) -> List[Phase]:
                 i += 1
             # Expect header row starting with '|', capture columns mapping (supports optional 'Week')
             header_cells: List[str] = []
-            col_index: dict = {}
             if i < len(lines) and lines[i].lstrip().startswith("|"):
                 raw_header = lines[i]
                 header_cells = [c.strip() for c in raw_header.strip().strip("|").split("|")]

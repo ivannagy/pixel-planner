@@ -1,6 +1,6 @@
 from datetime import date
 
-from scripts.pixel_planner import parse_markdown_for_phases, generate_timeline_block
+from scripts.pixel_planner import generate_timeline_block, parse_markdown_for_phases
 
 
 def test_timeline_clamps_to_last_milestone_and_bracket():
