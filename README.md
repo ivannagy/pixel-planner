@@ -130,4 +130,4 @@ and peer reviews, but for a focused automation like Pixel Planner, vibe-coding w
 Improvements welcome. Please keep changes small and readable.
 
 ## License
-MIT. See `LICENSE`.
+Apache-2.0. See `LICENSE`. A `NOTICE` file is included for attribution.
