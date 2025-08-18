@@ -367,7 +367,7 @@ def generate_timeline_block(phases: List[Phase], today: date, plan_basis: str = 
 
 def generate_status_graph(phases: List[Phase]) -> str:
     # Count milestones by status across all phases
-    status_counts = {}
+    status_counts: dict[str, int] = {}
     all_milestones = [m for p in phases for m in p.milestones]
     total_milestones = len(all_milestones)
     
