@@ -2,12 +2,21 @@
 
 ## Project Timeline (Phases)
 
-```vb
-                                                                            ┌─→ 2025-08-08 (6% / 12%)
-- Phase 01 – Project Initiation      W 31-34 2025-08-01 to 2025-08-20 ▼ → [■|■ ■ ■]                                 25% / 50%
-- Phase 02 – Infrastructure Setup    W 35-39 2025-08-25 to 2025-09-25 ▲ →   |     [■ ■ ■ ■ ■]                       0% / 0%
-- Phase 03 – Application Development W 40-46 2025-10-01 to 2025-11-12 ▲ →   |               [■ ■ ■ ■ ■ ■ ■]         0% / 0%
-- Phase 04 – Launch                  W 48-50 2025-11-25 to 2025-12-10 ▲ →   |                               [■ ■ ■] 0% / 0%
+```text
+                                                                                ┌─→ 2025-08-18 (6% / 12%)
+- Phase 01 – Project Initiation      W 31-34 2025-08-01 to 2025-08-20 ▼ → [■ ■ ■|■]                                 25% / 50%
+- Phase 02 – Infrastructure Setup    W 35-39 2025-08-25 to 2025-09-25 ▲ →       | [■ ■ ■ ■ ■]                       0% / 0%
+- Phase 03 – Application Development W 40-46 2025-10-01 to 2025-11-12 ▲ →       |           [■ ■ ■ ■ ■ ■ ■]         0% / 0%
+- Phase 04 – Launch                  W 48-50 2025-11-25 to 2025-12-10 ▲ →       |                           [■ ■ ■] 0% / 0%
+```
+
+## Milestone Status Overview
+
+```text
+- Backlog          : 14 → [■ ■ ■ ■ ■ ■ ■ ■] 82%
+- Done             : 01 → [■] 6%
+- In Progress      : 01 → [■] 6%
+- Ready for Review : 01 → [■] 6%
 ```
 
 ## Phase 01 – Project Initiation
