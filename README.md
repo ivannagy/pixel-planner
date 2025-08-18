@@ -8,6 +8,7 @@ Automate project plans written in Markdown. Generate a clean, gantt-like timelin
 - Initialize a new plan from a template
 - Parse phases and milestones from the plan
 - Generate/refresh a gantt-like "Project Timeline (Phases)" section
+- Generate/refresh "Milestone Status Overview" graph showing status distribution
 - Current-date marker with clamping to last milestone date
 - Global and per-phase percentages showing actual vs should-be
 - Supports baseline vs current planning bases
@@ -34,6 +35,11 @@ python3 scripts/pixel_planner.py init \
 python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basis current
 ```
 
+- Include milestone status overview graph:
+```bash
+python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basis current --include-status
+```
+
 - To a separate file first:
 ```bash
 python3 scripts/pixel_planner.py timeline --in Project-Plan.md --out Project-Plan.out.md --basis baseline
@@ -49,7 +55,7 @@ python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basi
 - Regenerate its timeline anytime:
 
 ```bash
-python3 scripts/pixel_planner.py timeline --in Sample-Project-Plan.md --in-place --basis current
+python3 scripts/pixel_planner.py timeline --in Sample-Project-Plan.md --in-place --basis current --include-status
 ```
 
 ## Short history (vibe-coding)
@@ -104,6 +110,20 @@ and peer reviews, but for a focused automation like Pixel Planner, vibe-coding w
 
 - Direction indicator: ▲ if executed ≥ should-be; otherwise ▼.
 
+## Milestone Status Overview
+When using `--include-status`, a status graph is generated showing milestone distribution:
+
+- Each ■ represents 10% of total milestones
+- Status names are automatically aligned for readability
+- Sorted by count (descending), then alphabetically
+
+```text
+- Backlog          : 14 → [■ ■ ■ ■ ■ ■ ■ ■] 82%
+- Done             : 01 → [■] 6%
+- In Progress      : 01 → [■] 6%
+- Ready for Review : 01 → [■] 6%
+```
+
 ## Example timeline (snippet)
 ```vb
                                                               ┌─→ 2025-03-02 (33% / 67%)
@@ -113,18 +133,22 @@ and peer reviews, but for a focused automation like Pixel Planner, vibe-coding w
 
 ## Tips and gotchas
 - Keep the timeline heading spelled exactly as `## Project Timeline (Phases)`
+- Keep the status heading spelled exactly as `## Milestone Status Overview` (when using `--include-status`)
 - Use correct phase heading format: `## Phase <number> – <name>` (or `-`)
 - Use ISO dates. If a phase has no valid dates for the selected basis, its bar may be empty but the line still renders.
 - Only `Done` marks a milestone as executed.
 - The `Week` column is deprecated and ignored in parsing; you can safely remove it.
 
 ## Troubleshooting
-- Timeline didn’t update
-  - Check the heading and code fence (```vb) under the timeline section
-- A phase didn’t show a bar
+- Timeline didn't update
+  - Check the heading and code fence (```text) under the timeline section
+- Status overview didn't update
+  - Check the heading and code fence (```text) under the status section
+  - Ensure you used `--include-status` flag
+- A phase didn't show a bar
   - Ensure it has at least one valid planned date for the chosen basis
 - Percentages look wrong
-  - Verify `Status` values and planned dates; items due today don’t count as should-be yet
+  - Verify `Status` values and planned dates; items due today don't count as should-be yet
 
 ## Contributing
 Improvements welcome. Please keep changes small and readable.

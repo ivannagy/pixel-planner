@@ -365,6 +365,92 @@ def generate_timeline_block(phases: List[Phase], today: date, plan_basis: str = 
 # -----------------------------
 
 
+def generate_status_graph(phases: List[Phase]) -> str:
+    # Count milestones by status across all phases
+    status_counts: dict[str, int] = {}
+    all_milestones = [m for p in phases for m in p.milestones]
+    total_milestones = len(all_milestones)
+    
+    if total_milestones == 0:
+        return "No milestones found."
+    
+    for milestone in all_milestones:
+        status = milestone.status.strip()
+        if not status:
+            status = "No Status"
+        status_counts[status] = status_counts.get(status, 0) + 1
+    
+    # Sort by count descending, then by name for consistent output
+    sorted_statuses = sorted(status_counts.items(), key=lambda x: (-x[1], x[0]))
+    
+    # Find the longest status name for alignment
+    max_status_length = max(len(status) for status, _ in sorted_statuses)
+    
+    lines = []
+    for status, count in sorted_statuses:
+        percentage = (count / total_milestones) * 100.0
+        # Each ■ represents 10%, so divide by 10 and round
+        bar_count = round(percentage / 10.0)
+        bars = "■ " * bar_count if bar_count > 0 else ""
+        bars = bars.rstrip()  # Remove trailing space
+        
+        line = f"- {status:<{max_status_length}} : {count:02d} → [{bars}] {percentage:.0f}%"
+        lines.append(line)
+    
+    return "\n".join(lines)
+
+
+def replace_status_section(md: str, status_block_content: str) -> str:
+    lines = md.splitlines()
+    n = len(lines)
+    # Locate the status heading
+    heading_idx = None
+    for idx, line in enumerate(lines):
+        if line.strip().lower().startswith("## milestone status"):
+            heading_idx = idx
+            break
+    
+    if heading_idx is None:
+        # If not found, append at end
+        new_block = [
+            "## Milestone Status Overview",
+            "",
+            "```text",
+            *status_block_content.splitlines(),
+            "```",
+        ]
+        return (md.rstrip() + "\n\n" + "\n".join(new_block) + "\n")
+    
+    # Find the end of existing status section: prefer closing code fence, otherwise next heading or EOF
+    i = heading_idx + 1
+    # Skip blank lines
+    while i < n and lines[i].strip() == "":
+        i += 1
+    # If next is an opening fence, skip until matching closing fence
+    if i < n and lines[i].strip().startswith("```"):
+        i += 1
+        while i < n and not lines[i].strip().startswith("```"):
+            i += 1
+        if i < n and lines[i].strip().startswith("```"):
+            i += 1  # include closing fence
+    else:
+        # No fence; skip until next heading or EOF
+        while i < n and not lines[i].strip().startswith("## "):
+            i += 1
+    
+    # Build new content
+    before = lines[:heading_idx]
+    new_block = [
+        lines[heading_idx],
+        "",
+        "```text",
+        *status_block_content.splitlines(),
+        "```",
+    ]
+    after = lines[i:]
+    return "\n".join(before + new_block + after).rstrip() + "\n"
+
+
 def replace_timeline_section(md: str, vb_block_content: str) -> str:
     lines = md.splitlines()
     n = len(lines)
@@ -434,19 +520,28 @@ def cmd_init(template: Path, out_file: Path, project_name: Optional[str]) -> Non
     print(f"Initialized plan at: {out_file}")
 
 
-def cmd_timeline(in_file: Path, in_place: bool, out_file: Optional[Path], plan_basis: str, as_of: Optional[date]) -> None:
+def cmd_timeline(in_file: Path, in_place: bool, out_file: Optional[Path], plan_basis: str, as_of: Optional[date], include_status: bool = False) -> None:
     md = read_text(in_file)
     phases = parse_markdown_for_phases(md)
     today = as_of or date.today()
     vb = generate_timeline_block(phases, today, plan_basis=plan_basis)
     new_md = replace_timeline_section(md, vb)
+    
+    if include_status:
+        status_graph = generate_status_graph(phases)
+        new_md = replace_status_section(new_md, status_graph)
+    
     if in_place:
         write_text(in_file, new_md)
         print(f"Updated timeline in: {in_file}")
+        if include_status:
+            print(f"Updated status overview in: {in_file}")
     else:
         assert out_file is not None
         write_text(out_file, new_md)
         print(f"Wrote timeline to: {out_file}")
+        if include_status:
+            print(f"Wrote status overview to: {out_file}")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -476,6 +571,12 @@ def build_parser() -> argparse.ArgumentParser:
         required=False,
         help="Override 'today' (YYYY-MM-DD) for timeline generation",
     )
+    p_tl.add_argument(
+        "--include-status",
+        dest="include_status",
+        action="store_true",
+        help="Include milestone status overview graph in addition to timeline",
+    )
 
     return p
 
@@ -495,7 +596,7 @@ def main(argv: Optional[List[str]] = None) -> None:
                 as_of_date = datetime.strptime(args.as_of, DATE_FMT).date()
             except ValueError:
                 raise SystemExit("--date must be in YYYY-MM-DD format")
-        cmd_timeline(args.in_file, args.in_place, args.out_file, args.basis, as_of_date)
+        cmd_timeline(args.in_file, args.in_place, args.out_file, args.basis, as_of_date, args.include_status)
     else:
         parser.print_help()
 
