@@ -3,8 +3,8 @@
 ## Project Timeline (Phases)
 
 ```text
-                                                                                ┌─→ 2025-08-18 (6% / 12%)
-- Phase 01 – Project Initiation      W 31-34 2025-08-01 to 2025-08-20 ▼ → [■ ■ ■|■]                                 25% / 50%
+                                                                                ┌─→ 2025-08-19 (6% / 18%)
+- Phase 01 – Project Initiation      W 31-34 2025-08-01 to 2025-08-20 ▼ → [■ ■ ■|■]                                 25% / 75%
 - Phase 02 – Infrastructure Setup    W 35-39 2025-08-25 to 2025-09-25 ▲ →       | [■ ■ ■ ■ ■]                       0% / 0%
 - Phase 03 – Application Development W 40-46 2025-10-01 to 2025-11-12 ▲ →       |           [■ ■ ■ ■ ■ ■ ■]         0% / 0%
 - Phase 04 – Launch                  W 48-50 2025-11-25 to 2025-12-10 ▲ →       |                           [■ ■ ■] 0% / 0%
@@ -63,3 +63,21 @@
 | Post-mortem      | Blameless retrospective and action items.      | Backlog  | 2025-12-10    | 2025-12-10   | PM       |          |
 
 ---
+
+## Project Baseline v1.0
+
+```text
+- Phase 01 – Project Initiation      W 31-34 2025-08-01 to 2025-08-20 ▲ → [■ ■ ■ ■]                                 25% / 100%
+- Phase 02 – Infrastructure Setup    W 34-38 2025-08-21 to 2025-09-15 ▲ →       [■ ■ ■ ■ ■]                         0% / 100%
+- Phase 03 – Application Development W 39-46 2025-09-26 to 2025-11-10 ▲ →                 [■ ■ ■ ■ ■ ■ ■ ■]         0% / 100%
+- Phase 04 – Launch                  W 47-50 2025-11-22 to 2025-12-10 ▲ →                                 [■ ■ ■ ■] 0% / 100%
+```
+
+## Project Baseline v1.1
+
+```text
+- Phase 01 – Project Initiation      W 31-34 2025-08-01 to 2025-08-20 ▲ → [■ ■ ■ ■]                                 25% / 100%
+- Phase 02 – Infrastructure Setup    W 34-38 2025-08-21 to 2025-09-15 ▲ →       [■ ■ ■ ■ ■]                         0% / 100%
+- Phase 03 – Application Development W 39-46 2025-09-26 to 2025-11-10 ▲ →                 [■ ■ ■ ■ ■ ■ ■ ■]         0% / 100%
+- Phase 04 – Launch                  W 47-50 2025-11-22 to 2025-12-10 ▲ →                                 [■ ■ ■ ■] 0% / 100%
+```

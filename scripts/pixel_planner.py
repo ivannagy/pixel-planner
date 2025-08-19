@@ -451,6 +451,138 @@ def replace_status_section(md: str, status_block_content: str) -> str:
     return "\n".join(before + new_block + after).rstrip() + "\n"
 
 
+def generate_baseline_block(phases: List[Phase], plan_basis: str = "baseline") -> str:
+    # Baseline timeline without date markers or effective date calculations
+    # Choose which plan dates to use for alignment
+    def start_of(phase: Phase) -> Optional[date]:
+        return phase.baseline_start if plan_basis == "baseline" else phase.current_start
+
+    def end_of(phase: Phase) -> Optional[date]:
+        return phase.baseline_end if plan_basis == "baseline" else phase.current_end
+
+    valid_ranges = [(start_of(p), end_of(p)) for p in phases if start_of(p) and end_of(p)]
+    if not valid_ranges:
+        return "No phases with valid dates found. Fill in milestone dates first."
+
+    global_start = safe_min([s for s, _ in valid_ranges])
+    global_end = safe_max([e for _, e in valid_ranges])
+    assert global_start and global_end
+
+    anchor = start_of_week_monday(global_start)
+    total_weeks = compute_weeks_span(global_start, global_end)
+
+    cell_width = 2  # each week cell is 2 characters wide: '■ '
+    # Add one extra column so the closing ']' of a bar at the far right is always visible
+    total_width = total_weeks * cell_width + 1
+
+    # Left section widths for alignment
+    phase_labels = [f"- Phase {p.number} – {p.name}" for p in phases]
+    phase_w = max([len(s) for s in phase_labels] + [20])
+    week_w = len("W 00-00")
+    date_w = len("0000-00-00 to 0000-00-00")
+
+    def left_prefix_text(phase: Phase, s: Optional[date], e: Optional[date], direction: str) -> str:
+        left = f"{f'- Phase {phase.number} – {phase.name}':<{phase_w}} {format_week_label(s, e):<{week_w}} {format_date_range(s, e):<{date_w}} {direction} → "
+        return left
+
+    lines: List[str] = []
+
+    for phase, phase_label in zip(phases, phase_labels):
+        s = start_of(phase)
+        e = end_of(phase)
+
+        # Build background with spaces (no date marker for baseline)
+        canvas = [" "] * total_width
+
+        if s and e:
+            # Compute block placement
+            start_idx = compute_week_index(anchor, s)
+            weeks_len = compute_weeks_span(s, e)
+            block = "[" + ("■ " * weeks_len).rstrip() + "]"
+            block_start_pos = start_idx * cell_width
+            # Ensure canvas can fit block (clip if necessary)
+            for j, ch in enumerate(block):
+                pos = block_start_pos + j
+                if 0 <= pos < total_width:
+                    canvas[pos] = ch
+
+        bar = "".join(canvas)
+
+        # Per-phase actual vs should-be (for baseline, use all milestones as baseline context)
+        phase_total = len(phase.milestones)
+        phase_done = sum(1 for m in phase.milestones if m.status.strip().lower() == "done")
+        # For baseline: "should-be" is based on the baseline plan being the reference
+        phase_baseline_total = sum(1 for m in phase.milestones if m.baseline_plan is not None)
+
+        def pct(n: int, d: int) -> str:
+            if d <= 0:
+                return "0%"
+            return f"{(n / d) * 100.0:.0f}%"
+
+        # Direction: for baseline view, always show ▲ (no time-based comparison)
+        direction = "▲"
+
+        left_prefix = left_prefix_text(phase, s, e, direction)
+        a_str = pct(phase_done, phase_total)
+        b_str = pct(phase_baseline_total, phase_total)
+
+        lines.append(f"{left_prefix}{bar} {a_str} / {b_str}")
+
+    return "\n".join(lines)
+
+
+def replace_baseline_section(md: str, baseline_content: str, version: str) -> str:
+    lines = md.splitlines()
+    n = len(lines)
+    # Locate the baseline heading for this version
+    target_heading = f"## project baseline {version}".lower()
+    heading_idx = None
+    for idx, line in enumerate(lines):
+        if line.strip().lower() == target_heading:
+            heading_idx = idx
+            break
+    
+    if heading_idx is None:
+        # If not found, append at end
+        new_block = [
+            f"## Project Baseline {version}",
+            "",
+            "```text",
+            *baseline_content.splitlines(),
+            "```",
+        ]
+        return (md.rstrip() + "\n\n" + "\n".join(new_block) + "\n")
+    
+    # Find the end of existing baseline section: prefer closing code fence, otherwise next heading or EOF
+    i = heading_idx + 1
+    # Skip blank lines
+    while i < n and lines[i].strip() == "":
+        i += 1
+    # If next is an opening fence, skip until matching closing fence
+    if i < n and lines[i].strip().startswith("```"):
+        i += 1
+        while i < n and not lines[i].strip().startswith("```"):
+            i += 1
+        if i < n and lines[i].strip().startswith("```"):
+            i += 1  # include closing fence
+    else:
+        # No fence; skip until next heading or EOF
+        while i < n and not lines[i].strip().startswith("## "):
+            i += 1
+    
+    # Build new content
+    before = lines[:heading_idx]
+    new_block = [
+        lines[heading_idx],
+        "",
+        "```text",
+        *baseline_content.splitlines(),
+        "```",
+    ]
+    after = lines[i:]
+    return "\n".join(before + new_block + after).rstrip() + "\n"
+
+
 def replace_timeline_section(md: str, vb_block_content: str) -> str:
     lines = md.splitlines()
     n = len(lines)
@@ -520,12 +652,21 @@ def cmd_init(template: Path, out_file: Path, project_name: Optional[str]) -> Non
     print(f"Initialized plan at: {out_file}")
 
 
-def cmd_timeline(in_file: Path, in_place: bool, out_file: Optional[Path], plan_basis: str, as_of: Optional[date], include_status: bool = False) -> None:
+def cmd_timeline(in_file: Path, in_place: bool, out_file: Optional[Path], plan_basis: str, as_of: Optional[date], include_status: bool = False, baseline_version: str = "v1.0") -> None:
     md = read_text(in_file)
     phases = parse_markdown_for_phases(md)
-    today = as_of or date.today()
-    vb = generate_timeline_block(phases, today, plan_basis=plan_basis)
-    new_md = replace_timeline_section(md, vb)
+    
+    if plan_basis == "baseline":
+        # Generate baseline timeline (no date markers)
+        baseline_block = generate_baseline_block(phases, plan_basis=plan_basis)
+        new_md = replace_baseline_section(md, baseline_block, baseline_version)
+        section_name = f"baseline {baseline_version}"
+    else:
+        # Generate current timeline (with date markers)
+        today = as_of or date.today()
+        timeline_block = generate_timeline_block(phases, today, plan_basis=plan_basis)
+        new_md = replace_timeline_section(md, timeline_block)
+        section_name = "timeline"
     
     if include_status:
         status_graph = generate_status_graph(phases)
@@ -533,13 +674,13 @@ def cmd_timeline(in_file: Path, in_place: bool, out_file: Optional[Path], plan_b
     
     if in_place:
         write_text(in_file, new_md)
-        print(f"Updated timeline in: {in_file}")
+        print(f"Updated {section_name} in: {in_file}")
         if include_status:
             print(f"Updated status overview in: {in_file}")
     else:
         assert out_file is not None
         write_text(out_file, new_md)
-        print(f"Wrote timeline to: {out_file}")
+        print(f"Wrote {section_name} to: {out_file}")
         if include_status:
             print(f"Wrote status overview to: {out_file}")
 
@@ -577,6 +718,13 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Include milestone status overview graph in addition to timeline",
     )
+    p_tl.add_argument(
+        "--version",
+        dest="baseline_version",
+        type=str,
+        default="v1.0",
+        help="Baseline version (only valid with --basis baseline, default: v1.0)",
+    )
 
     return p
 
@@ -590,13 +738,18 @@ def main(argv: Optional[List[str]] = None) -> None:
     elif command == "timeline":
         if not args.in_place and not args.out_file:
             raise SystemExit("When not using --in-place, you must provide --out")
+        
+        # Validate version argument
+        if args.baseline_version != "v1.0" and args.basis != "baseline":
+            raise SystemExit("--version can only be used with --basis baseline")
+            
         as_of_date: Optional[date] = None
         if args.as_of:
             try:
                 as_of_date = datetime.strptime(args.as_of, DATE_FMT).date()
             except ValueError:
                 raise SystemExit("--date must be in YYYY-MM-DD format")
-        cmd_timeline(args.in_file, args.in_place, args.out_file, args.basis, as_of_date, args.include_status)
+        cmd_timeline(args.in_file, args.in_place, args.out_file, args.basis, as_of_date, args.include_status, args.baseline_version)
     else:
         parser.print_help()
 
