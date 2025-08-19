@@ -5,7 +5,7 @@ import re
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 from pathlib import Path
-from typing import List, Optional, Sequence
+from typing import Dict, List, Optional, Sequence
 
 # -----------------------------
 # Data models
@@ -367,7 +367,7 @@ def generate_timeline_block(phases: List[Phase], today: date, plan_basis: str = 
 
 def generate_status_graph(phases: List[Phase]) -> str:
     # Count milestones by status across all phases
-    status_counts: dict[str, int] = {}
+    status_counts: Dict[str, int] = {}
     all_milestones = [m for p in phases for m in p.milestones]
     total_milestones = len(all_milestones)
     
