@@ -652,7 +652,15 @@ def cmd_init(template: Path, out_file: Path, project_name: Optional[str]) -> Non
     print(f"Initialized plan at: {out_file}")
 
 
-def cmd_timeline(in_file: Path, in_place: bool, out_file: Optional[Path], plan_basis: str, as_of: Optional[date], include_status: bool = False, baseline_version: str = "v1.0") -> None:
+def cmd_timeline(
+    in_file: Path,
+    in_place: bool,
+    out_file: Optional[Path],
+    plan_basis: str,
+    as_of: Optional[date],
+    include_status: bool = False,
+    baseline_version: str = "v1.0",
+) -> None:
     md = read_text(in_file)
     phases = parse_markdown_for_phases(md)
     
