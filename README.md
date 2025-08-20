@@ -42,7 +42,7 @@ python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basi
 
 - To a separate file using baseline dates:
 ```bash
-python3 scripts/pixel_planner.py timeline --in Project-Plan.md --out Project-Plan.out.md --basis baseline
+python3 scripts/pixel_planner.py timeline --in Project-Plan.md --out Project-Plan.out.md --basis baseline --version v1.0
 ```
 
 - Generate as-of a specific date (for reproducible timelines):
