@@ -11,7 +11,7 @@ Automate project plans written in Markdown. Generate a clean, gantt-like timelin
 - Generate/refresh "Milestone Status Overview" graph showing status distribution
 - Current-date marker with clamping to last milestone date
 - Global and per-phase percentages showing actual vs should-be
-- Supports baseline vs current planning bases
+- Flexible baseline vs current planning basis selection for timeline comparison
 
 ## Requirements
 - Python 3.9+
@@ -40,7 +40,7 @@ python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basi
 python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basis current --include-status
 ```
 
-- To a separate file first:
+- To a separate file using baseline dates:
 ```bash
 python3 scripts/pixel_planner.py timeline --in Project-Plan.md --out Project-Plan.out.md --basis baseline
 ```
@@ -96,6 +96,8 @@ and peer reviews, but for a focused automation like Pixel Planner, vibe-coding w
 - Basis (which plan dates are used)
   - `--basis current` (default): position bars and compute "should-be" from Current Plan dates.
   - `--basis baseline`: use Baseline Plan dates instead.
+  - This separation allows you to maintain both your original baseline and revised current plans, enabling comparison between planned vs actual timeline evolution.
+  - You can generate timelines using either version independently, making it easy to track scope changes and schedule adjustments over time.
 
 ## Percentages (progress logic)
 - Header percentages (global): `X% / Y%`
