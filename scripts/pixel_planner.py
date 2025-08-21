@@ -508,25 +508,12 @@ def generate_baseline_block(phases: List[Phase], plan_basis: str = "baseline") -
 
         bar = "".join(canvas)
 
-        # Per-phase actual vs should-be (for baseline, use all milestones as baseline context)
-        phase_total = len(phase.milestones)
-        phase_done = sum(1 for m in phase.milestones if m.status.strip().lower() == "done")
-        # For baseline: "should-be" is based on the baseline plan being the reference
-        phase_baseline_total = sum(1 for m in phase.milestones if m.baseline_plan is not None)
-
-        def pct(n: int, d: int) -> str:
-            if d <= 0:
-                return "0%"
-            return f"{(n / d) * 100.0:.0f}%"
-
         # Direction: for baseline view, always show ▲ (no time-based comparison)
         direction = "▲"
 
         left_prefix = left_prefix_text(phase, s, e, direction)
-        a_str = pct(phase_done, phase_total)
-        b_str = pct(phase_baseline_total, phase_total)
 
-        lines.append(f"{left_prefix}{bar} {a_str} / {b_str}")
+        lines.append(f"{left_prefix}{bar}")
 
     return "\n".join(lines)
 

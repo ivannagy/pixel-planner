@@ -94,12 +94,14 @@ and peer reviews, but for a focused automation like Pixel Planner, vibe-coding w
   - The effective date is today, but if today is beyond the last milestone date (across all phases), it is clamped to that last milestone date.
 
 - Basis (which plan dates are used)
-  - `--basis current` (default): position bars and compute "should-be" from Current Plan dates.
-  - `--basis baseline`: use Baseline Plan dates instead.
+  - `--basis current` (default): position bars and compute "should-be" from Current Plan dates. Shows activity evolution percentages.
+  - `--basis baseline`: use Baseline Plan dates instead. Shows clean timeline bars without activity evolution percentages.
   - This separation allows you to maintain both your original baseline and revised current plans, enabling comparison between planned vs actual timeline evolution.
   - You can generate timelines using either version independently, making it easy to track scope changes and schedule adjustments over time.
 
 ## Percentages (progress logic)
+**Note: Activity evolution percentages are only shown for `--basis current` timelines. Baseline timelines show clean bars without percentages.**
+
 - Header percentages (global): `X% / Y%`
   - X% = executed/total across all milestones (executed = count of `Done`).
   - Y% = planned-by-effective-date/total across all milestones, based on the chosen basis.
@@ -110,7 +112,7 @@ and peer reviews, but for a focused automation like Pixel Planner, vibe-coding w
 
 - Important rule: "planned-by-effective-date" uses a strict comparison of planned date < effective date. Milestones due today are counted as should-be tomorrow (after the day passes).
 
-- Direction indicator: ▲ if executed ≥ should-be; otherwise ▼.
+- Direction indicator: ▲ if executed ≥ should-be; otherwise ▼ (for current timelines only).
 
 ## Milestone Status Overview
 When using `--include-status`, a status graph is generated showing milestone distribution:
@@ -126,11 +128,19 @@ When using `--include-status`, a status graph is generated showing milestone dis
 - Ready for Review : 01 → [■] 6%
 ```
 
-## Example timeline (snippet)
+## Example timelines
+
+### Current timeline (with activity evolution percentages)
 ```vb
                                                               ┌─→ 2025-03-02 (33% / 67%)
 - Phase 01 – Install Infrastructure ▲ W 05-08 2025-01-31 to 2025-02-20 → [■ ■ ■ ■] 50% / 100%
 - Phase 02 – Deploy new App ▼         W 09-09 2025-03-02 to 2025-03-02 →     |      [■] 0% / 0%
+```
+
+### Baseline timeline (clean bars without percentages)
+```text
+- Phase 01 – Install Infrastructure ▲ W 05-08 2025-01-31 to 2025-02-20 → [■ ■ ■ ■]
+- Phase 02 – Deploy new App ▲         W 09-09 2025-03-02 to 2025-03-02 →         [■]
 ```
 
 ## Tips and gotchas
