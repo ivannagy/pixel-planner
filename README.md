@@ -18,13 +18,7 @@ Automate project plans written in Markdown. Generate a clean, gantt-like timelin
 pip install pixel-planner
 ```
 
-### Option 2: Install via Homebrew (macOS/Linux)
-```bash
-brew tap ivannagy/pixel-planner
-brew install pixel-planner
-```
-
-### Option 3: Clone and run (Development)
+### Option 2: Clone and run (Development)
 - Python 3.9+ required
 - Clone this repository and use `python3 scripts/pixel_planner.py`
 

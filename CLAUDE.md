@@ -51,7 +51,6 @@ This is a Python CLI tool that parses Markdown project plans and generates Gantt
 ### Installation & Distribution
 - Available via pip: `pip install pixel-planner`
 - Console script entry point: `pixel-planner` command
-- Homebrew formula available: `pixel-planner.rb`
 - Template files bundled as package data
 - Backward compatible with clone-and-run usage
 
