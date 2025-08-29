@@ -12,19 +12,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Install dev dependencies: `pip install -r requirements-dev.txt`
 
 ### Main Tool Usage
-- Initialize new project plan: `python3 scripts/pixel_planner.py init --template templates/pixel-planner-phase-template.md --out Project-Plan.md --project "Project Name"`
-- Generate timeline (in-place): `python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basis current`
-- Generate timeline (to file): `python3 scripts/pixel_planner.py timeline --in Project-Plan.md --out output.md --basis baseline`
-- Generate timeline as-of date: `python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basis current --date 2025-03-02`
+- Initialize new project plan: `pixel-planner init --out Project-Plan.md --project "Project Name"`
+- Generate timeline (in-place): `pixel-planner timeline --in Project-Plan.md --in-place --basis current`
+- Generate timeline (to file): `pixel-planner timeline --in Project-Plan.md --out output.md --basis baseline`
+- Generate timeline as-of date: `pixel-planner timeline --in Project-Plan.md --in-place --basis current --date 2025-03-02`
+- Include status overview: `pixel-planner timeline --in Project-Plan.md --in-place --basis current --include-status`
 
 ## Architecture Overview
 
 This is a Python CLI tool that parses Markdown project plans and generates Gantt-like timelines. The core architecture consists of:
 
 ### Core Components
-- `scripts/pixel_planner.py`: Single-file CLI with data models (`Milestone`, `Phase`) and all logic
-- `templates/pixel-planner-phase-template.md`: Template for new project plans
+- `pixel_planner/cli.py`: Main CLI module with data models (`Milestone`, `Phase`) and all logic
+- `pixel_planner/__main__.py`: Module entry point for `python -m pixel_planner`
+- `pixel_planner/__init__.py`: Package initialization with version info
+- `pixel_planner/templates/`: Bundled template files for new project plans
 - `Sample-Project-Plan.md`: Working example that demonstrates all features
+- `pyproject.toml`: Package configuration with PyPI metadata and console script entry point
 
 ### Key Data Flow
 1. **Parser**: Extracts phases and milestones from Markdown tables using regex
@@ -44,8 +48,15 @@ This is a Python CLI tool that parses Markdown project plans and generates Gantt
 - `--basis baseline`: Uses Baseline Plan dates instead
 - This allows comparing original plan vs revised plan while maintaining timeline accuracy
 
+### Installation & Distribution
+- Available via pip: `pip install pixel-planner`
+- Console script entry point: `pixel-planner` command
+- Homebrew formula available: `pixel-planner.rb`
+- Template files bundled as package data
+- Backward compatible with clone-and-run usage
+
 ### Configuration
 - Ruff linting with 160 char line length
 - MyPy type checking (lenient config)
-- Python 3.11+ target
+- Python 3.9+ requirement (3.11+ target)
 - pytest for testing

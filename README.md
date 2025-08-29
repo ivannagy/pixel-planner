@@ -1,7 +1,5 @@
 # Pixel Planner
 
-[![CI](https://github.com/ivannagy/pixel-planner/actions/workflows/ci.yml/badge.svg)](https://github.com/ivannagy/pixel-planner/actions/workflows/ci.yml)
-
 Automate project plans written in Markdown. Generate a clean, gantt-like timeline from your phases and milestones, and keep progress indicators up to date with a single command.
 
 ## Features
@@ -13,13 +11,31 @@ Automate project plans written in Markdown. Generate a clean, gantt-like timelin
 - Global and per-phase percentages showing actual vs should-be
 - Flexible baseline vs current planning basis selection for timeline comparison
 
-## Requirements
-- Python 3.9+
+## Installation
+
+### Option 1: Install via pip (Recommended)
+```bash
+pip install pixel-planner
+```
+
+### Option 2: Install via Homebrew (macOS/Linux)
+```bash
+brew tap ivannagy/pixel-planner
+brew install pixel-planner
+```
+
+### Option 3: Clone and run (Development)
+- Python 3.9+ required
+- Clone this repository and use `python3 scripts/pixel_planner.py`
 
 ## Quick start
 1) Create a plan from the template
 
 ```bash
+# If installed via pip/brew:
+pixel-planner init --out Project-Plan.md --project "My Project"
+
+# If using cloned repository:
 python3 scripts/pixel_planner.py init \
   --template templates/pixel-planner-phase-template.md \
   --out Project-Plan.md \
@@ -32,22 +48,26 @@ python3 scripts/pixel_planner.py init \
 
 - In place (recommended):
 ```bash
+# If installed via pip/brew:
+pixel-planner timeline --in Project-Plan.md --in-place --basis current
+
+# If using cloned repository:
 python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basis current
 ```
 
 - Include milestone status overview graph:
 ```bash
-python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basis current --include-status
+pixel-planner timeline --in Project-Plan.md --in-place --basis current --include-status
 ```
 
 - To a separate file using baseline dates:
 ```bash
-python3 scripts/pixel_planner.py timeline --in Project-Plan.md --out Project-Plan.out.md --basis baseline --version v1.0
+pixel-planner timeline --in Project-Plan.md --out Project-Plan.out.md --basis baseline --version v1.0
 ```
 
 - Generate as-of a specific date (for reproducible timelines):
 ```bash
-python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basis current --date 2025-03-02
+pixel-planner timeline --in Project-Plan.md --in-place --basis current --date 2025-03-02
 ```
 
 ## Sample project
@@ -55,6 +75,10 @@ python3 scripts/pixel_planner.py timeline --in Project-Plan.md --in-place --basi
 - Regenerate its timeline anytime:
 
 ```bash
+# If installed via pip/brew:
+pixel-planner timeline --in Sample-Project-Plan.md --in-place --basis current --include-status
+
+# If using cloned repository:
 python3 scripts/pixel_planner.py timeline --in Sample-Project-Plan.md --in-place --basis current --include-status
 ```
 
@@ -162,8 +186,32 @@ When using `--include-status`, a status graph is generated showing milestone dis
 - Percentages look wrong
   - Verify `Status` values and planned dates; items due today don't count as should-be yet
 
-## Contributing
-Improvements welcome. Please keep changes small and readable.
+## Development & Contributing
+
+### Development Setup
+```bash
+git clone https://github.com/ivannagy/pixel-planner.git
+cd pixel-planner
+pip install -r requirements-dev.txt
+pip install -e .
+```
+
+### Running Tests
+```bash
+pytest -q              # Run all tests
+ruff check .           # Lint code
+mypy pixel_planner     # Type check
+```
+
+### Releasing
+See [RELEASING.md](RELEASING.md) for the automated release process.
+
+### Contributing
+Improvements welcome! Please:
+- Keep changes small and readable
+- Add tests for new functionality
+- Follow existing code style
+- Submit pull requests for review
 
 ## License
 Apache-2.0. See `LICENSE`. A `NOTICE` file is included for attribution.
