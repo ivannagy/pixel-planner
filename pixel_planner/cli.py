@@ -724,7 +724,12 @@ def build_parser() -> argparse.ArgumentParser:
     sub = p.add_subparsers(dest="command", required=True)
 
     p_init = sub.add_parser("init", help="Create a new project plan from a template")
-    p_init.add_argument("--template", type=Path, default="pixel-planner-phase-template.md", help="Path to template file or template name (default: pixel-planner-phase-template.md)")
+    p_init.add_argument(
+        "--template", 
+        type=Path, 
+        default="pixel-planner-phase-template.md", 
+        help="Path to template file or template name (default: pixel-planner-phase-template.md)"
+    )
     p_init.add_argument("--out", type=Path, required=True, help="Output Markdown plan file path")
     p_init.add_argument("--project", type=str, required=False, help="Project name to set in the plan header")
 
