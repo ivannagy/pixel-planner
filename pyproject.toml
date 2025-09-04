@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pixel-planner"
-version = "0.2.1"
+version = "0.2.2"
+description = "Automate project plans written in Markdown"
 authors = [
     {name = "Ivan Nagy", email = "786743+ivannagy@users.noreply.github.com"}
 ]
-description = "Automate project plans written in Markdown. Generate clean, gantt-like timelines from your phases and milestones."
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [
