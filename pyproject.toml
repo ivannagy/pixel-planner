@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "pixel-planner"
 version = "0.2.1"
 authors = [
-    {name = "Ivan Nagy", email = "ivan@example.com"}
+    {name = "Ivan Nagy", email = "786743+ivannagy@users.noreply.github.com"}
 ]
 description = "Automate project plans written in Markdown. Generate clean, gantt-like timelines from your phases and milestones."
 readme = "README.md"

@@ -2,7 +2,7 @@
 
 __version__ = "0.2.1"
 __author__ = "Ivan Nagy"
-__email__ = "ivan@example.com"
+__email__ = "786743+ivannagy@users.noreply.github.com"
 
 from .cli import main
 
