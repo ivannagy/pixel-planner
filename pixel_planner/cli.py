@@ -284,9 +284,9 @@ def generate_timeline_block(phases: List[Phase], today: date, plan_basis: str = 
     total_milestones = len(all_milestones)
     executed_count = sum(1 for m in all_milestones if m.status.strip().lower() == "done")
     # Use strict '<' so items due "today" are not yet counted as should-be-done until the day passes
+    # Progress calculation should always use baseline dates regardless of plan_basis
     baseline_planned_by_today = sum(1 for m in all_milestones if m.baseline_plan and m.baseline_plan < effective_today)
-    current_planned_by_today = sum(1 for m in all_milestones if m.current_plan and m.current_plan < effective_today)
-    planned_by_today = current_planned_by_today if plan_basis == "current" else baseline_planned_by_today
+    planned_by_today = baseline_planned_by_today
     executed_pct = (executed_count / total_milestones * 100.0) if total_milestones > 0 else 0.0
     planned_pct = (planned_by_today / total_milestones * 100.0) if total_milestones > 0 else 0.0
     header_b = f"{executed_pct:.0f}%"
@@ -330,17 +330,14 @@ def generate_timeline_block(phases: List[Phase], today: date, plan_basis: str = 
 
         bar = "".join(canvas)
 
-        # Per-phase actual vs should-be (based on chosen basis) as shares of phase milestones
+        # Per-phase actual vs should-be (always use baseline for progress tracking)
         phase_total = len(phase.milestones)
         phase_done = sum(1 for m in phase.milestones if m.status.strip().lower() == "done")
+        # Progress calculation should always use baseline dates regardless of plan_basis
         phase_planned = sum(
             1
             for m in phase.milestones
-            if (
-                (m.current_plan and m.current_plan < effective_today)
-                if plan_basis == "current"
-                else (m.baseline_plan and m.baseline_plan < effective_today)
-            )
+            if m.baseline_plan and m.baseline_plan < effective_today
         )
 
         def pct(n: int, d: int) -> str:
