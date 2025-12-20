@@ -184,7 +184,7 @@ When using `--include-status`, a status graph is generated showing milestone dis
 
 ### Development Setup
 ```bash
-git clone https://github.com/ivannagy/pixel-planner.git
+git clone https://github.com/prometh-sh/pixel-planner.git
 cd pixel-planner
 pip install -r requirements-dev.txt
 pip install -e .
